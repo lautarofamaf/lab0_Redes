@@ -90,15 +90,27 @@ def connect_to_server(server_name):
     # Buscar direccion ip
     # COMPLETAR ABAJO DE ESTA LINEA
     ip_address = socket.gethostbyname(server_name)
+    # Esta función toma un nombre de dominio
     # Aqui deberian obtener la direccion ip del servidor y asignarla
+    # y devuelve su dirección IPv4 correspondiente.
     # a ip_address
     # DEJAR LA LINEA SIGUIENTE TAL COMO ESTA
     sys.stderr.write("Contactando al servidor en %s...\n" % ip_address)
     # Crear socket
     # COMPLETAR ABAJO DE ESTA LINEA
+    # Crea un nuevo socket utilizando la familia de direcciones IPv4(AF_INET)
+    # y un socket de flujo TCP (SOCK_STREAM)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((ip_address, HTTP_PORT))
-    return s
+    try:
+        s.connect((ip_address, HTTP_PORT))
+        return s
+    except socket.gaierror as e:
+        raise e  # Deja que el error de resolución de nombre se propague
+    except ConnectionRefusedError as e:
+        raise e  # Deja que el error de conexión rechazada se propague
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+        raise e  # Para que los tests sigan funcionando
     # Aqui deben conectarse al puerto correcto del servidor
     # NO MODIFICAR POR FUERA DE ESTA FUNCION
 
